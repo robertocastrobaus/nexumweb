@@ -1,0 +1,241 @@
+<div class="center">
+  <h2>
+    {{titulo_indicadores}}
+   </h2>
+</div>
+
+<button [disabled]="bloquea" type="button" (click)="actualizaModalTitle()" class="btn btn-primary" data-toggle="modal"
+  data-target="#mdIndicador">
+  Ingresar
+</button>
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+</mat-form-field>
+<br />
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort>
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b></b> </th>
+      <td mat-cell *matCellDef="let row">  <button data-target="#vIndicador"
+        (click)="visualizaModal(row.id,row.codigo,row.nombre,row.formula,row.medida,row.factor,row.tipo,row.idUsuario,row.usuarioPe.nombres)"
+        type="button" data-toggle="modal" data-placement="top" title="Visualizar" class="btn btn-secondary"><span
+          class="glyphicon glyphicon-eye-open"></span>
+      </button> </td>
+    </ng-container>
+    <ng-container matColumnDef="usuarioPe">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>USUARIO</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.usuarioPe}} </td>
+    </ng-container>
+    <ng-container matColumnDef="codigo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>CÓDIGO</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.codigo}} </td>
+    </ng-container>
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>NOMBRE</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.nombre}} </td>
+    </ng-container>
+    <ng-container matColumnDef="formula">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>FORMULA</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.formula}} </td>
+    </ng-container>
+    <ng-container matColumnDef="medida">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>MEDIDA</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.medida}} </td>
+    </ng-container>
+    <ng-container matColumnDef="factor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>FACTOR</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.factor}} </td>
+    </ng-container>
+    <ng-container matColumnDef="tipo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>TIPO</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.tipo}} </td>
+    </ng-container>
+    <ng-container matColumnDef="nbrTipo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>NOMBRE</b> </th>
+      <td mat-cell *matCellDef="let row"> {{row.nbrTipo}} </td>
+    </ng-container>
+    <!-- Name Column -->
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>ESTADO</b> </th>
+      <td mat-cell *matCellDef="let row"> <label for="Name" style="color: #dd4b39;" *ngIf="row.estado == 'I'"> Inactivo
+        </label> <label style="color:#3c8dbc;" *ngIf="row.estado == 'A'"> Activo </label> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="idUsuario">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'"> <b>TIPO</b> </th>
+      <td mat-cell *matCellDef="let row" [style.display]="'none'"> {{row.idUsuario}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="accion">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>ACCION</b> </th>
+      <td mat-cell *matCellDef="let row">
+        <!--<button mat-raised-button color="primary" (click)="editar(row.id)"><i class="fas fa-edit"></i></button>-->
+        <button [disabled]="bloquea" data-target="#mdIndicador" *ngIf="row.estado == 'A'"
+          (click)="actualizaModal(row.id,row.codigo,row.nombre,row.formula,row.medida,row.factor,row.tipo,row.idUsuario,row.usuarioPe.nombres, row.nbrTipo)"
+          type="button" data-toggle="modal" data-placement="top" title="Editar" class="btn btn-success"><span
+            class="glyphicon glyphicon-edit"></span>
+        </button>
+        <button [disabled]="bloquea" data-target="#mdIndicador" *ngIf="row.estado == 'I'" disabled
+          (click)="actualizaModal(row.id,row.codigo,row.nombre,row.formula,row.medida,row.factor,row.tipo,row.idUsuario,row.usuarioPe.nombres, row.nbrTipo)"
+          type="button" data-toggle="modal" data-placement="top" title="Editar" class="btn btn-success"><span
+            class="glyphicon glyphicon-edit"></span>
+        </button>
+        <button [disabled]="bloquea"
+          (click)="ActualizaEstadoI(row.id, row.estado)"
+          type="button" data-toggle="tooltip" data-placement="top" title="Inactivar" *ngIf="row.estado == 'A'"
+          class="btn btn-danger"><span class="glyphicon glyphicon-italic"></span></button>
+        <button [disabled]="bloquea"
+          (click)="ActualizaEstadoI(row.id, row.estado)"
+          type="button" data-toggle="tooltip" data-placement="top" title="Activar" *ngIf="row.estado == 'I'"
+          class="btn btn-primary"><span class="glyphicon glyphicon-font"></span></button>
+
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+</div>
+<div class="modal fade" id="mdIndicador" tabindex="-1" role="dialog" aria-labelledby="mdIndicador" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document" data-keyboard="false">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">{{title}}</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input type="hidden" name="id" [(ngModel)]="ind1.codigo" value="ind1.id">
+          <mat-form-field>
+            <mat-label *ngIf="nombresT != null">{{nombresT}}</mat-label>
+            <mat-label *ngIf="nombresT == null">Usuario</mat-label>
+            <mat-select [(value)]="ind1.idUsuario" >
+              <mat-option *ngFor="let usuarselpe of usuarselecPe" [value]="usuarselpe.id">
+                {{usuarselpe.nombres}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="example-full-width" >
+            <input   name="codigo" matInput placeholder="Código" value="ind1.codigo"
+              onkeyup="javascript:this.value=this.value.toUpperCase();" [(ngModel)]="ind1.codigo" value="ind1.codigo">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input  name="nombre" [(ngModel)]="ind1.nombre" matInput value="ind1.nombre" placeholder="Nombre"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <textarea  matInput name="formula" [(ngModel)]="ind1.formula" value="ind1.formula" placeholder="Formula"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input matInput name="media" [(ngModel)]="ind1.medida" value="ind1.medida" placeholder="Medida"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input matInput name="factor" [(ngModel)]="ind1.factor" value="ind1.factor" placeholder="Factor"
+              type="number" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Tipo</mat-label>
+            <select  matNativeControl [(ngModel)]="ind1.tipo" name="car" [placeholder]="ind1.tipo">
+              <option value="" selected></option>
+              <option *ngFor="let car of cars" [value]="car.value">
+                {{car.viewValue}}
+              </option>
+            </select>
+          </mat-form-field>
+          <mat-form-field class="example-full-width" *ngIf="ind1.tipo == 'Proyecto'">
+            <textarea  matInput name="nbrproyecto" [(ngModel)]="ind1.nbrTipo" value="ind1.nbrTipo" placeholder="Nombre Proyecto"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+          </mat-form-field>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+        <button type="button" *ngIf="title == 'Ingresar Indicador'" class="btn btn-primary" 
+          (click)="guardaIndicador()">Guardar</button>
+        <button type="button" *ngIf="title != 'Ingresar Indicador'" class="btn btn-primary" 
+          (click)="ActualizarIndicador()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="vIndicador" tabindex="-1" role="dialog" aria-labelledby="vIndicador" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document" data-keyboard="false">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">Visualiza Indicador</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input type="hidden" name="id" [(ngModel)]="ind1.codigo" value="ind1.id">
+          <mat-form-field>
+            <mat-label *ngIf="nombresT != null">{{nombresT}}</mat-label>
+            <mat-label *ngIf="nombresT == null">Usuario</mat-label>
+            <mat-select disabled [(value)]="ind1.idUsuario" >
+              <mat-option *ngFor="let usuarselpe of usuarselecPe" [value]="usuarselpe.id">
+                {{usuarselpe.nombres}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="example-full-width" >
+            <input disabled  name="codigo" matInput placeholder="Código" value="ind1.codigo"
+              onkeyup="javascript:this.value=this.value.toUpperCase();" [(ngModel)]="ind1.codigo" value="ind1.codigo">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input disabled  name="nombre" [(ngModel)]="ind1.nombre" matInput value="ind1.nombre" placeholder="Nombre"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <textarea disabled matInput name="formula" [(ngModel)]="ind1.formula" value="ind1.formula" placeholder="Formula"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input disabled matInput name="media" [(ngModel)]="ind1.medida" value="ind1.medida" placeholder="Medida"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input disabled matInput name="factor" [(ngModel)]="ind1.factor" value="ind1.factor" placeholder="Factor"
+              type="number" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Tipo</mat-label>
+            <select disabled  matNativeControl [(ngModel)]="ind1.tipo" name="car" [placeholder]="ind1.tipo">
+              <option value="" selected></option>
+              <option *ngFor="let car of cars" [value]="car.value">
+                {{car.viewValue}}
+              </option>
+            </select>
+          </mat-form-field>
+          <mat-form-field  class="example-full-width" *ngIf="ind1.tipo == 'Proyecto'">
+            <textarea disabled  matInput name="nbrproyecto" [(ngModel)]="ind1.nbrTipo" value="ind1.nbrTipo" placeholder="Nombre Proyecto"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+          </mat-form-field>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })
+
+</script>

@@ -1,0 +1,48 @@
+
+<div class="login-box" style="margin-top: 160px;">
+
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <h3 style="text-align: center;"><b>Inicia sesión</b></h3>
+    <form style="display: flex;flex-direction: column;" [formGroup]="loginForm" (ngSubmit)="onLogin()" novalidate>
+         
+          <!--span class="bmd-form-group"-->
+          <mat-form-field appearance="standard">
+            <mat-label>Usuario</mat-label>
+            <input type="text" name="username" formControlName="username" matInput autocomplete="off" (keyup)="onKey($event)" cdkFocusInitial>
+            <mat-icon matPrefix>account_circle</mat-icon>
+            <mat-error>Nombre de usuario obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="standard">
+            <mat-label>Contraseña</mat-label>
+            <input matInput formControlName="password" [type]="hide ? 'password' : 'text'">
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-error>Contraseña obligatoria</mat-error>
+          </mat-form-field>
+
+          <button class="btn btn-primary col-12" type="submit" >Iniciar Sesión</button>
+          <!--button type="button" class="btn btn-primary btn-link col-12" mat-button-->
+         <!-- <a mat-button class="btn btn-primary btn-link col-12" href="/login/recuperarContrasena">Cambiar
+            Contraseña</a>
+          /button-->
+
+          <!--button  mat-raised-button class="btn btn-sm btn-primary btn-link"></button-->
+      </form>
+
+ <!--   <div class="social-auth-links text-center">
+      <p>- OR -</p>
+      <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
+        Facebook</a>
+      <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+        Google+</a>
+    </div>
+     /.social-auth-links
+
+    <a href="#">I forgot my password</a><br>
+    <a href="register.html" class="text-center">Register a new membership</a>
+ -->
+  </div>
+  <!-- /.login-box-body -->
+</div>

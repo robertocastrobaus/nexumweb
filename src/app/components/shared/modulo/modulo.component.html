@@ -1,0 +1,16 @@
+
+    <!-- <mat-form-field>
+      <mat-label style="color: white;">Seleccione Modulo</mat-label>
+       <mat-select style="color: white;">
+        <mat-option   *ngFor="let modselecs of modselec" [value]="modselecs.modulo" >
+          {{modselecs.nombre}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+-->
+    <select id="cars" (change)="actualizamodulo($event);"  >
+        <option  *ngFor="let modselecs of modselec" value={{modselecs.modulo}}> {{modselecs.nombre}}</option>
+        
+      </select>
+
+

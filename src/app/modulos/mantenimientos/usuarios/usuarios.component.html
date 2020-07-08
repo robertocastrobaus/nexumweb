@@ -1,0 +1,78 @@
+<div class="center">
+  <h2>
+    {{titulo_usuario}}
+   </h2>
+</div>
+  
+
+
+<button [disabled]="bloquea" type="button" class="btn btn-primary" (click)='openselec()' data-toggle="modal" data-target="#mdUsuario">
+  Ingresar
+</button>
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+</mat-form-field>
+<div class="mat-elevation-z8" >
+  <table mat-table [dataSource]="dataSource" matSort >
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> id </th>
+      <td mat-cell *matCellDef="let row" > {{row.id}} </td>
+    </ng-container>
+    <ng-container matColumnDef="usuario">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
+      <td mat-cell *matCellDef="let row"> {{row.usuario}} </td>
+    </ng-container>
+    <ng-container matColumnDef="nombres">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombres </th>
+      <td mat-cell *matCellDef="let row"> {{row.nombres}} </td>
+    </ng-container>
+    <!-- Name Column -->
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+      <td mat-cell *matCellDef="let row" > <label for="Name"  style="color:#dd4b39;" *ngIf="row.estado == 'I'"> Inactivo </label> <label style="color:#3c8dbc;" *ngIf="row.estado == 'A'"> Activo </label> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="accion">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Acción </th>
+      <td mat-cell *matCellDef="let row" ><button [disabled]="bloquea" class="btn btn-primary" (click)="editar(row.id)" *ngIf="row.estado == 'I'" > ACTIVAR</button> <button [disabled]="bloquea" class="btn btn-danger" (click)="editar(row.id)" *ngIf="row.estado == 'A'" > INACTIVAR</button> </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="mdUsuario" tabindex="-1" role="dialog" aria-labelledby="ModalCiente" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">Ingresar Usuario</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <mat-form-field>
+          <mat-label>Seleccionar</mat-label>
+          <mat-select [(value)]="usuarioPe.usuario">
+            <mat-option *ngFor="let usuarselecs of usuarselec" [value]="usuarselecs.usuario">
+              {{usuarselecs.nombre}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="guardaUsuario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+
+  
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.mat-form-field {
+  font-size: 11px;
+  width: 100%;
+}
+
+td, th {
+  width: 10%;
+}
+
+.center { display : flex ; justify-content : center ; } 

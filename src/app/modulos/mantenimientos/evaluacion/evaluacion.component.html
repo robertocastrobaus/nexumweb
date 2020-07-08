@@ -1,0 +1,217 @@
+<p class="center">{{titulo_evaluacion}}</p>
+<br>
+    <mat-grid-list cols="4" rowHeight="100px">
+        <mat-grid-tile [colspan]="4">
+            <form class="example-form" [formGroup]="evaluacionForm">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Usuario</mat-label>
+                     <mat-select [(value)]="evParam.idUsuario">
+                      <mat-option *ngFor="let usuarselpe of usuarselecPe"  [value]="usuarselpe.id">
+                        {{usuarselpe.nombres}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <br>
+              <mat-form-field class="example-full-width1">
+                <mat-label>Mes</mat-label>
+                <select matNativeControl [(ngModel)]="evParam.mes"  [ngModelOptions]="{standalone: true}" name="ms" >
+                  <option value="" selected></option>
+                  <option *ngFor="let meses of mes " [value]="meses.value">
+                    {{meses.viewValue}}
+                  </option>
+                </select>
+              </mat-form-field>
+              &nbsp;
+              <mat-form-field class="example-full-width1">
+                <mat-label>Año</mat-label>
+                <select matNativeControl [(ngModel)]="evParam.anio" [ngModelOptions]="{standalone: true}"  name="an" [placeholder]="">
+                  <option value="" selected></option>
+                  <option *ngFor="let anios of anio " [value]="anios.value">
+                    {{anios.viewValue}}
+                  </option>
+                </select>
+              </mat-form-field>
+              &nbsp;&nbsp;
+              <button type="button" (click)="getEvaluacion()" class="btn btn-primary example-full-width1">
+                Consultar
+                </button>
+            </form>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <br>
+      <p></p>
+      
+      <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+      </mat-form-field> 
+      
+      <label class="sinlinea" *ngIf="bandera == false" [style.color]="colorPeriodo()"> Periodo Cerrado </label>
+      <label class="sinlinea" *ngIf="bandera == true" [style.color]="colorPeriodo()" > Periodo Abierto </label>
+
+      <mat-form-field class="example-full-width11">
+        <mat-label ><b>CUMPLIMIENTO</b></mat-label>
+        <input matInput value="{{cumplimiento}}%" disabled [style.color]="colortexto(cumplimiento)" [style.background-color]="colorfondo(cumplimiento)">
+      </mat-form-field>
+
+      <br />
+      
+      <div class="mat-elevation-z8" >
+        <table id="ExampleTable" mat-table [dataSource]="dataSource" matSort style="align-content: center;" >
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b></b> </th>
+            <td mat-cell *matCellDef="let row"> 
+              <button data-target="#mdEvaluacionGrafico" 
+              (click)="llenaInfoData(row.id_indicador, row.indicadorPe.nombre)"
+              type="button" data-toggle="modal" data-placement="top" title="Gráfico" class="btn btn-secondary"><span
+                class="glyphicon glyphicon-stats"></span>
+            </button>
+            </td>
+          </ng-container>
+          
+          <ng-container matColumnDef="id_usuario">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'"> <b></b> </th>
+            <td mat-cell *matCellDef="let row" [style.display]="'none'"> </td>
+          </ng-container>
+          <ng-container matColumnDef="id_indicador">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'"> <b></b> </th>
+            <td mat-cell *matCellDef="let row" [style.display]="'none'">      </td>
+          </ng-container>
+          <ng-container matColumnDef="indicadorPe">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header > <b>INDICADOR</b> </th>
+            <td mat-cell *matCellDef="let row"  > {{row.indicadorPe}} </td>
+          </ng-container>
+          <ng-container matColumnDef="factor" style="align-items: center;">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header > <b>FACTOR</b> </th>
+            <td mat-cell *matCellDef="let row"  style="align-content: center;" > {{row.factor}} </td>
+          </ng-container>
+          
+          <!--
+          <ng-container matColumnDef="">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header > <b>Factor</b> </th>
+            <td mat-cell *matCellDef="let row"  > {{row.indicadorPe.factor}} </td>
+          </ng-container>
+          <ng-container matColumnDef="mes">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>MES</b> </th>
+            <td mat-cell *matCellDef="let row"> {{row.mes}} </td>
+          </ng-container>
+          <ng-container matColumnDef="anio">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>AÑO</b> </th>
+            <td mat-cell *matCellDef="let row"> {{row.anio}}</td>
+          </ng-container>
+          -->
+          
+          <ng-container matColumnDef="meta">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>META</b> </th>
+            <td mat-cell *matCellDef="let row"> {{row.meta}} </td>
+          </ng-container>
+          <ng-container matColumnDef="real">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>REAL</b> </th>
+            <td mat-cell *matCellDef="let row"> {{row.real}} </td>
+          </ng-container>
+          <ng-container matColumnDef="peso">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>PESO %</b> </th>
+            <td mat-cell *matCellDef="let row"> {{row.peso}} </td>
+          </ng-container>
+          <ng-container matColumnDef="cumplimiento" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header > <b>CUMPLIMIENTO %</b> </th>
+            <td mat-cell *matCellDef="let row" align="center" [style.color]="colortexto(row.cumplimiento)" [style.background-color]="colorfondo(row.cumplimiento)" > {{row.cumplimiento}} </td>
+          </ng-container>
+          <ng-container matColumnDef="pesoReal" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>PESO REAL %</b> </th>
+            <td mat-cell *matCellDef="let row" align="center"> {{row.pesoReal}} </td>
+          </ng-container>
+          <ng-container matColumnDef="accion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>ACCION</b> </th>
+            <td mat-cell *matCellDef="let row"> 
+              
+              <button data-target="#mdEvaluacion" [disabled]="!bandera"
+              (click)="actualizaModal(row.id,row.meta,row.peso,row.real,row.indicadorPe.nombre, row.id_usuario)"
+              type="button" data-toggle="modal" data-placement="top" title="Editar" class="btn btn-success"><span
+                class="glyphicon glyphicon-edit"></span>
+            </button>
+
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+          
+        </table>
+        
+          <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+      </div>
+      
+      <div class="menu">
+        <button  class="btn btn-primary btn-sm" (click)="exportTable()">Generar excel
+      </button></div>
+      
+  <div class="modal fade" id="mdEvaluacion" tabindex="-1" role="dialog" aria-labelledby="mdEvaluacion" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document" data-keyboard="false">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">{{titulo}}</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+         
+          <mat-form-field class="example-full-width2">
+            <input matInput name="meta" disabled="{{bloquea}}" placeholder="Meta"  [(ngModel)]="evParam.meta" value="10"   type="number" step="0.01" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width2">
+            <input matInput name="peso" disabled="{{bloquea}}"  placeholder="Peso" [(ngModel)]="evParam.peso" value="evParam.peso" type="number" step="0.01" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width2">
+            <input matInput name="real"  placeholder="Real" [(ngModel)]="evParam.real" value="evParam.real" type="number" step="0.01" >
+          </mat-form-field>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        
+        <button type="button"  class="btn btn-primary" data-dismiss="modal"
+          (click)="ActualizarEv()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<div class="modal fade" id="mdEvaluacionGrafico" tabindex="-1" role="dialog" aria-labelledby="mdEvaluacionGrafico" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document" data-keyboard="false">
+    <div class="modal-content">
+      <div class="modal-header" style="align-content: center;">
+        <h4 class="modal-title" id="exampleModalLongTitle" style="align-content: center;">{{titulo}}</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+         
+          <div>
+            <div>
+              <div style="display: block">
+                <canvas baseChart
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+              
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div> 
